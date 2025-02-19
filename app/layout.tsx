@@ -50,6 +50,13 @@ export default function RootLayout({
         <script src="/serviceWorkerRegister.js" defer></script>
       </head>
       <body>
+        {/* 雪花容器 */}
+        <div className="snowflakes">
+          {Array.from({ length: 50 }).map((_, i) => (
+              <span key={i} className="snowflake" />
+          ))}
+        </div>
+
         {children}
         {serverConfig?.isVercel && (
           <>
