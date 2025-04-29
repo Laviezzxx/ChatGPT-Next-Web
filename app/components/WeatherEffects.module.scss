@@ -1,0 +1,261 @@
+.weatherEffects {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.snowflakes {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: screen;
+
+  @keyframes fall {
+    0% {
+      transform: translate3d(var(--start-x), -100vh, 0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translate3d(var(--end-x), 100vh, 0) rotate(720deg);
+      opacity: 0.3;
+    }
+  }
+
+  .snowflake {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle at center,
+            rgba(255,255,255,1) 30%,
+            rgba(255,255,255,0.5) 70%);
+    border-radius: 50%;
+    animation: fall linear infinite;
+
+    @for $i from 1 through 80 {
+      &:nth-child(#{$i}) {
+        --start-x: #{random(100) - 10}vw;
+        --end-x: #{random(20) - 10}vw;
+        left: random(100) * 1%;
+        animation-duration: (random(15) + 8) * 1s;
+        animation-delay: random(15) * -1s;
+        filter: blur(#{random(3)}px);
+        box-shadow: 0 0 10px rgba(255,255,255,0.5);
+      }
+    }
+  }
+}
+
+// 雨滴效果 - 真实版
+.rainContainer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.05); // 更淡的背景
+  z-index: 1;
+}
+
+.raindrop {
+  display: inline-block;
+  position: absolute;
+  top: -20px; // 从视口更上方开始
+  width: 2px; // 更细的雨滴
+  height: 20px; // 更长的雨滴
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(160, 220, 255, 0.5) 40%,
+    rgba(140, 210, 255, 0.8) 90%,
+    rgba(120, 200, 255, 1) 100%
+  ); // 渐变效果模拟水滴
+  border-radius: 0 0 50% 50%; // 底部圆形
+  box-shadow: 
+    0 0 5px rgba(200, 230, 255, 0.3), // 柔和光晕
+    inset 0 0 2px rgba(255, 255, 255, 0.5); // 内部高光
+  transform: rotate(3deg); // 稍微倾斜
+  animation: rainFall 1.5s linear forwards; // 更流畅的下落
+  filter: blur(0.2px); // 轻微模糊
+  opacity: 0.8;
+}
+
+.ripple {
+  display: inline-block;
+  position: absolute;
+  border: 1px solid rgba(180, 220, 255, 0.6); // 半透明边框
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(180, 220, 255, 0.3) 30%,
+    rgba(160, 210, 255, 0.1) 70%,
+    transparent 100%
+  ); // 渐变背景模拟水波
+  transform: rotateX(65deg) translate(-50%, -50%); // 适当倾斜
+  animation: rippleEffect 0.9s ease-out forwards; // 缓出效果更自然
+  will-change: transform, opacity, width, height; // 优化性能
+}
+
+@keyframes rainFall {
+  0% {
+    top: -20px;
+    height: 20px;
+    opacity: 0.7;
+    transform: rotate(3deg) translateX(-5px);
+  }
+  25% {
+    transform: rotate(5deg) translateX(-3px);
+  }
+  50% {
+    height: 25px; // 中途拉长
+    transform: rotate(2deg) translateX(0);
+    opacity: 0.8;
+  }
+  75% {
+    transform: rotate(4deg) translateX(3px);
+  }
+  90% {
+    height: 35px; // 接近地面时最长
+    opacity: 0.9;
+  }
+  100% {
+    top: 98%;
+    height: 5px; // 落地时变短
+    opacity: 0; // 落地时消失
+    transform: rotate(0) translateX(5px);
+  }
+}
+
+@keyframes rippleEffect {
+  0% {
+    width: 1px;
+    height: 1px;
+    opacity: 0.8;
+    border-width: 1px;
+  }
+  20% {
+    opacity: 0.7;
+    border-width: 1px;
+  }
+  50% {
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
+    border-width: 0.8px;
+  }
+  80% {
+    width: 35px;
+    height: 35px;
+    opacity: 0.3;
+    border-width: 0.5px;
+  }
+  100% {
+    width: 45px;
+    height: 45px;
+    opacity: 0;
+    border-width: 0;
+  }
+}
+
+// 云朵效果
+.cloudContainer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.cloud {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50px;
+  animation: cloudMove linear infinite;
+  
+  @for $i from 1 through 3 {
+    &:nth-child(#{$i}) {
+      width: random(100) + 50px;
+      height: random(30) + 20px;
+      top: random(30) * 1%;
+      left: random(100) * 1%;
+      animation-duration: random(20) + 20s;
+      animation-delay: random(10) * 1s;
+    }
+  }
+}
+
+// 太阳效果
+.sunContainer {
+  position: absolute;
+  top: 50px;
+  right: 50px;
+}
+
+.sun {
+  width: 60px;
+  height: 60px;
+  background: #ffd700;
+  border-radius: 50%;
+  box-shadow: 0 0 40px #ffd700;
+  animation: sunPulse 2s ease-in-out infinite;
+}
+
+.sunray {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 2px;
+  background: #ffd700;
+  transform-origin: 0 0;
+  
+  @for $i from 1 through 8 {
+    &:nth-child(#{$i}) {
+      transform: rotate($i * 45deg);
+    }
+  }
+}
+
+// 动画关键帧
+@keyframes snowfall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+  }
+}
+
+@keyframes rainfall {
+  0% {
+    transform: translateY(-100vh);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes cloudMove {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100vw);
+  }
+}
+
+@keyframes sunPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 40px #ffd700;
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 60px #ffd700;
+  }
+} 

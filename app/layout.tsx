@@ -7,6 +7,7 @@ import type { Metadata, Viewport } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GoogleTagManager, GoogleAnalytics } from "@next/third-parties/google";
 import { getServerSideConfig } from "./config/server";
+import { WeatherEffects } from "./components/WeatherEffects";
 
 export const metadata: Metadata = {
   title: "NextChat",
@@ -50,13 +51,7 @@ export default function RootLayout({
         <script src="/serviceWorkerRegister.js" defer></script>
       </head>
       <body>
-        {/* 雪花容器 */}
-        <div className="snowflakes">
-          {Array.from({ length: 50 }).map((_, i) => (
-              <span key={i} className="snowflake" />
-          ))}
-        </div>
-
+        <WeatherEffects />
         {children}
         {serverConfig?.isVercel && (
           <>
