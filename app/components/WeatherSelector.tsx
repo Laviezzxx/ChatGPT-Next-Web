@@ -17,6 +17,7 @@ export const WeatherSelector = ({
   const [isRotating, setIsRotating] = useState(false);
   const [rotationDegree, setRotationDegree] = useState(0);
   const [hoverState, setHoverState] = useState<WeatherType | null>(null);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const wheelRef = useRef<HTMLDivElement>(null);
 
   // 天气类型对应的角度
@@ -50,20 +51,20 @@ export const WeatherSelector = ({
 
   // 处理点击旋转事件
   const handleRotate = () => {
-    if (isRotating) return; // 防止动画中重复点击
+    if (isRotating || isCollapsed) return; // 防止动画中或收缩状态下重复点击
 
     setIsRotating(true);
 
     // 添加点击动画效果
     if (wheelRef.current) {
-      wheelRef.current.style.transform = `rotate(${rotationDegree}deg) scale(0.9)`;
+      // 应用缩放效果，但保持45度旋转
+      wheelRef.current.classList.add(styles.clicking);
+
       setTimeout(() => {
         if (wheelRef.current) {
-          wheelRef.current.style.transform = `rotate(${
-            rotationDegree - 90
-          }deg)`;
+          wheelRef.current.classList.remove(styles.clicking);
         }
-      }, 50);
+      }, 150);
     }
 
     // 计算下一个天气的角度
@@ -83,7 +84,7 @@ export const WeatherSelector = ({
 
   // 鼠标悬停在各个区域上时的效果
   const handleSegmentHover = (weather: WeatherType) => {
-    if (!isRotating) {
+    if (!isRotating && !isCollapsed) {
       setHoverState(weather);
     }
   };
@@ -93,8 +94,41 @@ export const WeatherSelector = ({
     setHoverState(null);
   };
 
+  // 切换收缩/展开状态
+  const toggleCollapse = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 防止事件冒泡到转盘
+    setIsCollapsed((prev) => !prev);
+  };
+
   return (
-    <div className={styles.weatherSelector}>
+    <div
+      className={`${styles.weatherSelector} ${
+        isCollapsed ? styles.collapsed : ""
+      }`}
+    >
+      {/* 收缩/展开按钮 */}
+      <button
+        className={styles.collapseButton}
+        onClick={toggleCollapse}
+        aria-label={isCollapsed ? "展开天气选择器" : "收起天气选择器"}
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d={isCollapsed ? "M8 5l8 7-8 7" : "M16 5l-8 7 8 7"}
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+
       {/* 指针 */}
       <div className={styles.pointer}>
         {currentWeather && (
@@ -104,11 +138,15 @@ export const WeatherSelector = ({
         )}
       </div>
 
-      {/* 旋转转盘 */}
+      {/* 旋转转盘 - 整体旋转45度，将动态旋转值应用为转盘样式 */}
       <div
         ref={wheelRef}
-        className={styles.wheel}
-        style={{ transform: `rotate(${rotationDegree}deg)` }}
+        className={`${styles.wheel} ${styles.rotated45}`}
+        style={
+          {
+            "--rotation-angle": `${rotationDegree}deg`,
+          } as React.CSSProperties
+        }
         onClick={handleRotate}
       >
         {/* 雨 */}
