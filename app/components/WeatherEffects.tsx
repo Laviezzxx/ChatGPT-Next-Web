@@ -14,6 +14,19 @@ export const WeatherEffects = () => {
   const [loading, setLoading] = useState(true);
   const [manualWeather, setManualWeather] = useState<WeatherType | null>(null);
   const rainContainerRef = useRef<HTMLDivElement>(null);
+  const isPageVisibleRef = useRef<boolean>(true);
+
+  // 添加页面可见性检测
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      isPageVisibleRef.current = document.visibilityState === "visible";
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
 
   // 获取天气数据
   useEffect(() => {
@@ -96,7 +109,8 @@ export const WeatherEffects = () => {
 
     // 创建雨滴和涟漪
     const createRaindrop = () => {
-      if (!isActive || !rainContainerRef.current) return;
+      if (!isActive || !rainContainerRef.current || !isPageVisibleRef.current)
+        return;
 
       // 创建雨滴
       const raindrop = document.createElement("div");
@@ -148,20 +162,39 @@ export const WeatherEffects = () => {
       });
 
       // 递归调用，创建下一滴雨（保持适当频率）
-      setTimeout(createRaindrop, 1000 + Math.random() * 1500);
+      if (isActive && isPageVisibleRef.current) {
+        setTimeout(createRaindrop, 1000 + Math.random() * 1500);
+      }
     };
 
     // 启动雨滴动画 - 初始时创建多个雨滴，营造初始效果
     for (let i = 0; i < 10; i++) {
       setTimeout(() => {
-        if (isActive) createRaindrop();
+        if (isActive && isPageVisibleRef.current) createRaindrop();
       }, i * 100);
     }
+
+    // 处理页面可见性变化
+    const visibilityTimer = setInterval(() => {
+      if (
+        isActive &&
+        isPageVisibleRef.current &&
+        !document.querySelector(`.${styles.raindrop}`)
+      ) {
+        // 如果页面可见但没有雨滴，重新创建雨滴
+        for (let i = 0; i < 10; i++) {
+          setTimeout(() => {
+            if (isActive && isPageVisibleRef.current) createRaindrop();
+          }, i * 100);
+        }
+      }
+    }, 2000);
 
     // 清理函数
     return () => {
       isActive = false;
       window.removeEventListener("resize", handleResize);
+      clearInterval(visibilityTimer);
 
       // 清理所有雨滴和涟漪
       if (rainContainerRef.current) {

@@ -83,6 +83,7 @@
   animation: rainFall 1.5s linear forwards; // 更流畅的下落
   filter: blur(0.2px); // 轻微模糊
   opacity: 0.8;
+  will-change: transform, opacity, height, top; // 优化性能
 }
 
 .ripple {
