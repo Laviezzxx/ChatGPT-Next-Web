@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>飘动的云朵效果</title>
+<style>
+  body, html {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background-color: skyblue;
+  }
+  .cloud {
+    width: 150px;
+    height: 100px;
+    background-color: white;
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    animation: float 5s infinite ease-in-out;
+  }
+  /* 随机化动画参数 */
+  .cloud:nth-child(2) {
+    animation-duration: 4s;
+    animation-delay: 1s;
+    left: 300px;
+  }
+  .cloud:nth-child(3) {
+    animation-duration: 6s;
+    animation-delay: 2s;
+    left: 500px;
+    top: 150px;
+  }
+</style>
+</head>
+<body>
+<div class="cloud"></div>
+<div class="cloud"></div>
+<div class="cloud"></div>
+</body>
+</html>

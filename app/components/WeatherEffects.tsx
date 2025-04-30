@@ -20,7 +20,7 @@ export const WeatherEffects = () => {
     const fetchWeather = async () => {
       try {
         // 获取IP地址
-        const ipResponse = await fetch("https://api.ipify.org?format=json");
+        const ipResponse = await fetch("https://api.ipify.cn/?format=json");
         const { ip } = await ipResponse.json();
 
         // 使用IP获取位置信息
@@ -33,7 +33,6 @@ export const WeatherEffects = () => {
           `https://api.openweathermap.org/data/2.5/weather?lat=${locationData.latitude}&lon=${locationData.longitude}&appid=a1988bb6a3a91930e13b8ccc997f3af3&units=metric`,
         );
         const weatherData = await weatherResponse.json();
-
         // 将OpenWeather API的天气类型映射到我们的类型
         let mappedWeather: WeatherType = "clear";
         const apiWeather = weatherData.weather[0].main.toLowerCase();
@@ -64,7 +63,7 @@ export const WeatherEffects = () => {
       } catch (error) {
         console.error("Error fetching weather:", error);
         // 如果获取失败，默认显示雪花效果
-        setWeatherData({ weather: "snow", temperature: 20 });
+        setWeatherData({ weather: "rain", temperature: 20 });
       } finally {
         setLoading(false);
       }
@@ -202,9 +201,12 @@ export const WeatherEffects = () => {
       case "clouds":
         return (
           <div className={styles.cloudContainer}>
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className={styles.cloud} />
-            ))}
+            <div className={styles.cloud_one}></div>
+            <div className={styles.cloud_two}></div>
+            <div className={styles.cloud_three}></div>
+            <div className={styles.cloud_four}></div>
+            <div className={styles.cloud_five}></div>
+            <div className={styles.cloud_six}></div>
           </div>
         );
       case "clear":
