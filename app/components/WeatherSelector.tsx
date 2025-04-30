@@ -16,6 +16,7 @@ export const WeatherSelector = ({
 }: WeatherSelectorProps) => {
   const [isRotating, setIsRotating] = useState(false);
   const [rotationDegree, setRotationDegree] = useState(0);
+  const [collapseDegree, setCollapseDegree] = useState(0); // 新增：收缩状态的额外旋转角度
   const [hoverState, setHoverState] = useState<WeatherType | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const wheelRef = useRef<HTMLDivElement>(null);
@@ -97,8 +98,28 @@ export const WeatherSelector = ({
   // 切换收缩/展开状态
   const toggleCollapse = (e: React.MouseEvent) => {
     e.stopPropagation(); // 防止事件冒泡到转盘
+
+    // 设置收缩/展开状态
     setIsCollapsed((prev) => !prev);
+
+    // 收缩时添加旋转效果，展开时恢复
+    if (!isCollapsed) {
+      // 收缩时添加180度旋转
+      setCollapseDegree(180);
+    } else {
+      // 展开时恢复
+      setCollapseDegree(0);
+    }
+
+    // 防止在动画过程中点击
+    setIsRotating(true);
+    setTimeout(() => {
+      setIsRotating(false);
+    }, 600);
   };
+
+  // 计算总旋转角度 = 基础旋转 + 折叠时额外旋转
+  const totalRotationDegree = rotationDegree + collapseDegree;
 
   return (
     <div
@@ -144,7 +165,7 @@ export const WeatherSelector = ({
         className={`${styles.wheel} ${styles.rotated45}`}
         style={
           {
-            "--rotation-angle": `${rotationDegree}deg`,
+            "--rotation-angle": `${totalRotationDegree}deg`,
           } as React.CSSProperties
         }
         onClick={handleRotate}

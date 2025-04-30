@@ -16,7 +16,8 @@
     
     .wheel {
       opacity: 0.5;
-      transform: rotate(45deg) translateY(0) !important;
+      // 不再强制设置固定的旋转角度，让JS控制旋转
+      // transform: rotate(45deg) translateY(0) !important;
       
       &::after {
         opacity: 0;
