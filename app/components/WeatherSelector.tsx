@@ -18,7 +18,7 @@ export const WeatherSelector = ({
   const [rotationDegree, setRotationDegree] = useState(0);
   const [collapseDegree, setCollapseDegree] = useState(0); // 新增：收缩状态的额外旋转角度
   const [hoverState, setHoverState] = useState<WeatherType | null>(null);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const wheelRef = useRef<HTMLDivElement>(null);
 
   // 天气类型对应的角度
