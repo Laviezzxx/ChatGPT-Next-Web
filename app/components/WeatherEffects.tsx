@@ -70,13 +70,15 @@ export const WeatherEffects = () => {
         }
 
         setWeatherData({
-          weather: mappedWeather,
-          temperature: weatherData.main.temp,
+          // weather: mappedWeather,
+          // temperature: weatherData.main.temp,
+          weather: "snow",
+          temperature: 20,
         });
       } catch (error) {
         console.error("Error fetching weather:", error);
         // 如果获取失败，默认显示雪花效果
-        setWeatherData({ weather: "rain", temperature: 20 });
+        setWeatherData({ weather: "snow", temperature: 20 });
       } finally {
         setLoading(false);
       }
